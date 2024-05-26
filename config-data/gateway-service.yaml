@@ -44,3 +44,7 @@ spring:
           uri: lb://oficinaRRHH-service
           predicates:
             - Path=/oficinaRRHH/**
+        - id: ms-vehiculo
+          uri: lb://ms-vehiculo
+          predicates:
+            - Path=/api/v1/vehiculos/**
