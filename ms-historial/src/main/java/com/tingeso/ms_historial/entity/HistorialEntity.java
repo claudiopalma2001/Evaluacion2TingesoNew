@@ -25,12 +25,12 @@ public class HistorialEntity {
     private Date fechaIngreso;
     private Time horaIngreso;
     private float montoTotalReparaciones;
-    private float totalRecargos;
-    private float totalDescuentos;
+    private float recargos;
+    private float descuentos;
     private float iva;
     private float costoTotal;
     private Date fechaSalida;
     private Time horaSalida;
-    private Date fechaDeRecogidaVehiculo;
-    private Time horaDeRecogidaVehiculo;
+    private Date fechaRecogida;
+    private Time horaRecogida;
 }
