@@ -32,3 +32,7 @@ spring:
           uri: lb://ms-detalle
           predicates:
             - Path=/detalles/**
+        - id: ms-historial
+          uri: lb://ms-historial
+          predicates:
+            - Path=/historial/**
