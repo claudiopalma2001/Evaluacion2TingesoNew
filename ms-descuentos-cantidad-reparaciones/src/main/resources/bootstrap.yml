@@ -10,7 +10,7 @@ spring:
       uri: http://localhost:8081
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/descuentosCantidadReparaciones
+    url: jdbc:postgresql://localhost:5432/descuentosCantidadReparacion
     username: postgres
     password: password
   jpa:
