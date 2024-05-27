@@ -48,3 +48,7 @@ spring:
           uri: lb://ms-precios
           predicates:
             - Path=/precios/**
+        - id: ms-recargos-kilometraje
+          uri: lb://ms-recargos-kilometraje
+          predicates:
+            - Path=/recargo_kilometraje/**
