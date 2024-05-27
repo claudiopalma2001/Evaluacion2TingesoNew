@@ -44,3 +44,7 @@ spring:
           uri: lb://ms-descuentos-bonos
           predicates:
             - Path=/descuentos_bonos/**
+        - id: ms-precios
+          uri: lb://ms-precios
+          predicates:
+            - Path=/precios/**
