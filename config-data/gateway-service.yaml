@@ -40,3 +40,7 @@ spring:
           uri: lb://ms-descuentos-cantidad-reparaciones
           predicates:
             - Path=/descuentos_cantidad_reparacion/**
+        - id: ms-descuentos-bonos
+          uri: lb://ms-descuentos-bonos
+          predicates:
+            - Path=/descuentos_bonos/**
