@@ -20,5 +20,5 @@ public class PrecioEntity {
     private Long idReparacion;
     private String tipoDeMotor;
     private int precio;
-}
+
 }
