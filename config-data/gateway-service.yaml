@@ -52,3 +52,7 @@ spring:
           uri: lb://ms-recargos-kilometraje
           predicates:
             - Path=/recargo_kilometraje/**
+        - id: ms-recargos-antiguedad
+          uri: lb://ms-recargos-antiguedad
+          predicates:
+            - Path=/recargo_antiguedad/**
