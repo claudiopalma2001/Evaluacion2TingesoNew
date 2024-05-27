@@ -36,3 +36,7 @@ spring:
           uri: lb://ms-historial
           predicates:
             - Path=/historial/**
+        - id: ms-descuentos-cantidad-reparaciones
+          uri: lb://ms-descuentos-cantidad-reparaciones
+          predicates:
+            - Path=/descuentos_cantidad_reparacion/**

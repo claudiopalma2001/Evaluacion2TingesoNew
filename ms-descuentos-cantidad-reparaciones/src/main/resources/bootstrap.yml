@@ -1,0 +1,20 @@
+spring:
+  devtools:
+    restart:
+      additional-paths: src/main/java
+  application:
+    name: ms-descuentos-cantidad-reparaciones
+  cloud:
+    config:
+      enabled: true
+      uri: http://localhost:8081
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/descuentosCantidadReparaciones
+    username: postgres
+    password: password
+  jpa:
+    show-sql: true
+    hibernate:
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      ddl-auto: create
