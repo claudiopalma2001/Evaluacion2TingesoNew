@@ -15,7 +15,7 @@ public interface DescuentoCantidadReparacionesRepository extends JpaRepository<D
 
     public List<DescuentoCantidadReparacionesEntity> findByCantidadReparacionesMin(int cantidadReparaciones);
 
-    @Query(value = "SELECT * FROM descuentos_cantidad_reparaciones WHERE descuentos_cantidad_reparaciones.tipo_motor = :tipoMotor AND descuentos_cantidad_reparaciones.cantidad_reparaciones_min <= :numReparaciones AND descuentos_cantidad_reparaciones.cantidad_reparaciones_max >= :numReparaciones", nativeQuery = true)
+    @Query(value = "SELECT * FROM descuentos_cantidad_reparacion WHERE descuentos_cantidad_reparacion.tipo_motor = :tipoMotor AND descuentos_cantidad_reparacion.cantidad_reparaciones_min <= :numReparaciones AND descuentos_cantidad_reparacion.cantidad_reparaciones_max >= :numReparaciones", nativeQuery = true)
     DescuentoCantidadReparacionesEntity searchByCantidadReparacionesMinBetween(@Param("tipoMotor") String tipoMotor, @Param("numReparaciones") int numReparaciones);
 
 }

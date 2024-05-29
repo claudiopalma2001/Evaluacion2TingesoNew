@@ -1,6 +1,8 @@
 package com.tingeso.ms_historial.controller;
 
 import com.tingeso.ms_historial.entity.HistorialEntity;
+import com.tingeso.ms_historial.model.Detalle;
+import com.tingeso.ms_historial.model.Vehiculo;
 import com.tingeso.ms_historial.service.HistorialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -51,8 +53,62 @@ public class HistorialController {
         return ResponseEntity.ok(historialActualizado);
     }
 
+    @GetMapping("/detalles")
+    public List<Detalle> getAllDetalles() {
+        return historialService.getAllDetalles();
+    }
+
+    @GetMapping("/detalles/patente/{patente}")
+    public List<Detalle> getAllDetallesByPatente(@PathVariable String patente) {
+        return historialService.getAllDetallesByPatente(patente);
+    }
+
+    @GetMapping("/vehiculo/patente/{patente}")
+    public Vehiculo getVehiculoByPatente(@PathVariable String patente) {
+        return historialService.getVehiculoByPatente(patente);
+    }
+
+    @GetMapping("/calcular-descuento-dia-atencion/{patente}")
+    public float calcularDescuentoDiaAtencion(@PathVariable String patente) {
+        return historialService.calcularDescuentoDiaAtencion(patente);
+    }
+
+    @GetMapping("/calcular-recargo-retraso/{patente}")
+    public float calcularRecargoRetraso(@PathVariable String patente) {
+        // Suponiendo que necesitas obtener historiales desde alguna fuente
+        List<HistorialEntity> historiales = historialService.getHistorialReparaciones();
+        Vehiculo vehiculo = historialService.getVehiculoByPatente(patente);
+        return historialService.calcularRecargoRetraso(historiales, vehiculo);
+    }
+
+    @GetMapping("/calcular-descuento-cantidad-reparacion/{patente}")
+    public float calcularDescuentoCantidadReparacion(@PathVariable String patente) {
+        return historialService.calcularDescuentoCantidadReparacion(patente);
+    }
+
+    @GetMapping("/calcular-descuento-bono/{patente}")
+    public float calcularDescuentoBono(@PathVariable String patente) {
+        // Suponiendo que necesitas obtener el vehículo desde alguna fuente
+        Vehiculo vehiculo = historialService.getVehiculoByPatente(patente);
+        return historialService.calcularDescuentoBono(vehiculo);
+    }
+
+    @GetMapping("/calcular-recargo-kilometraje/{patente}")
+    public float calcularRecargoKilometraje(@PathVariable String patente) {
+        // Suponiendo que necesitas obtener el vehículo desde alguna fuente
+        Vehiculo vehiculo = historialService.getVehiculoByPatente(patente);
+        return historialService.calcularRecargoKilometraje(vehiculo);
+    }
+
+    @GetMapping("/calcular-recargo-antiguedad/{patente}")
+    public float calcularRecargoPorAntiguedad(@PathVariable String patente) {
+        // Suponiendo que necesitas obtener el vehículo desde alguna fuente
+        Vehiculo vehiculo = historialService.getVehiculoByPatente(patente);
+        return historialService.calcularRecargoPorAntiguedad(vehiculo);
+    }
+
     @PostMapping("/calcular")
-    public ResponseEntity<HistorialEntity> crearBoletaFinal(@RequestBody HistorialEntity historialReparaciones) {
+    public ResponseEntity<HistorialEntity> calcularHistorial(@RequestBody HistorialEntity historialReparaciones) {
         HistorialEntity historial = historialService.calculoHistorial(historialReparaciones);
         historial =  historialService.updateHistorialReparaciones(historial);
         return ResponseEntity.ok(historial);

@@ -1,5 +1,6 @@
 package com.tingeso.ms_historial.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Year;
 import com.tingeso.ms_historial.entity.HistorialEntity;
@@ -9,12 +10,14 @@ import com.tingeso.ms_historial.model.Detalle;
 import com.tingeso.ms_historial.model.Vehiculo;
 import com.tingeso.ms_historial.repository.HistorialRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.sql.Time;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @SuppressWarnings("ALL")
@@ -65,60 +68,67 @@ public class HistorialService {
     }
 
     public List<Detalle> getAllDetalles() {
-        List<Detalle> detalles = restTemplate.getForObject("http://ms-detalle/", List.class);
+        List<Detalle> detalles = restTemplate.getForObject("http://ms-detalle/detalles/", List.class);
         System.out.println(detalles);
         return detalles;
     }
 
     public List<Detalle> getAllDetallesByPatente(String patente) {
-        List<Detalle> detallesPorPatente = restTemplate.getForObject("http://ms-detalle/patentes/" + patente, List.class);
+        List<Detalle> detallesPorPatente = restTemplate.getForObject("http://ms-detalle/detalles/patentes/" + patente, List.class);
         System.out.println(detallesPorPatente);
         return detallesPorPatente;
     }
 
     public Vehiculo getVehiculoByPatente(String patente) {
-        Vehiculo vehiculo = restTemplate.getForObject("http://ms-detalle/patente/" + patente, Vehiculo.class);
+        Vehiculo vehiculo = restTemplate.getForObject("http://ms-vehiculo/vehiculos/patente/" + patente, Vehiculo.class);
         System.out.println(vehiculo);
         return vehiculo;
     }
 
     public float calcularDescuentoDiaAtencion(String patente) {
-        List<Detalle> detalles = getAllDetalles();
-        Date fechaMasReciente = null;
-        Time horaMasReciente = null;
+        try {
 
-        for (Detalle detalle : detalles) {
-            if (!detalle.getPatente().equals(patente)) {
-                continue;
+            List<LinkedHashMap> response = restTemplate.getForObject("http://ms-detalle/detalles/patentes/" + patente, List.class);
+            List<Detalle> detalles = objectMapper.convertValue(response, new TypeReference<List<Detalle>>() {});
+            Date fechaMasReciente = null;
+            Time horaMasReciente = null;
+
+            for (Detalle detalle : detalles) {
+                if (!detalle.getPatente().equals(patente)) {
+                    continue;
+                }
+
+                Date fechaActual = detalle.getFechaIngreso();
+                Time horaActual = detalle.getHoraIngreso();
+
+                if (fechaMasReciente == null || fechaActual.after(fechaMasReciente) ||
+                        (fechaActual.equals(fechaMasReciente) && horaActual.after(horaMasReciente))) {
+                    fechaMasReciente = fechaActual;
+                    horaMasReciente = horaActual;
+                }
             }
 
-            Date fechaActual = detalle.getFechaIngreso();
-            Time horaActual = detalle.getHoraIngreso();
-
-            if (fechaMasReciente == null || fechaActual.after(fechaMasReciente) ||
-                    (fechaActual.equals(fechaMasReciente) && horaActual.after(horaMasReciente))) {
-                fechaMasReciente = fechaActual;
-                horaMasReciente = horaActual;
+            if (fechaMasReciente == null || horaMasReciente == null) {
+                return 0;
             }
-        }
 
-        if (fechaMasReciente == null || horaMasReciente == null) {
-            return 0;
-        }
+            Calendar calendar = Calendar.getInstance();
+            Calendar calendar2 = Calendar.getInstance();
+            calendar.setTime(fechaMasReciente);
+            int diaSemana = calendar.get(Calendar.DAY_OF_WEEK);
 
-        Calendar calendar = Calendar.getInstance();
-        Calendar calendar2 = Calendar.getInstance();
-        calendar.setTime(fechaMasReciente);
-        int diaSemana = calendar.get(Calendar.DAY_OF_WEEK);
+            calendar2.setTimeInMillis(horaMasReciente.getTime());
+            int horaIngreso = calendar2.get(Calendar.HOUR_OF_DAY);
 
-        calendar2.setTimeInMillis(horaMasReciente.getTime());
-        int horaIngreso = calendar2.get(Calendar.HOUR_OF_DAY);
-
-        // Por algún motivo hay que ponerlo desde el domingo para que tome de lunes a jueves, extraño
-        if ((diaSemana == Calendar.SUNDAY || diaSemana == Calendar.MONDAY || diaSemana == Calendar.TUESDAY || diaSemana == Calendar.WEDNESDAY) && horaIngreso >= 9 && horaIngreso < 12) {
-            return 0.1f;
-        } else {
-            return 0;
+            // Por algún motivo hay que ponerlo desde el domingo para que tome de lunes a jueves, extraño
+            if ((diaSemana == Calendar.SUNDAY || diaSemana == Calendar.MONDAY || diaSemana == Calendar.TUESDAY || diaSemana == Calendar.WEDNESDAY) && horaIngreso >= 9 && horaIngreso < 12) {
+                return 0.1f;
+            } else {
+                return 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error al calcular el descuento por cantidad de reparaciones", e);
         }
     }
 
@@ -164,43 +174,40 @@ public class HistorialService {
     }
 
     public float calcularDescuentoCantidadReparacion(String patente) {
-        // Obtener historial de reparaciones por IDs
-        List<Detalle> reparaciones = getAllDetallesByPatente(patente);
+        try {
 
-        // Llamada al microservicio de Vehículos para obtener información del vehículo
-        RestTemplate restTemplate = new RestTemplate();
-        Vehiculo vehiculo = restTemplate.getForObject("http://ms-vehiculos/patente/" + patente, Vehiculo.class);
+            List<LinkedHashMap> response = restTemplate.getForObject("http://ms-detalle/detalles/patentes/" + patente, List.class);
+            List<Detalle> reparaciones = objectMapper.convertValue(response, new TypeReference<List<Detalle>>() {});
+            Vehiculo vehiculo = restTemplate.getForObject("http://ms-vehiculo/vehiculos/patente/" + patente, Vehiculo.class);
+            System.out.println("Vehiculo obtenido: " + vehiculo);
 
-        // Contar reparaciones en el último año
-        int numeroReparaciones = (int) reparaciones.stream()
-                .filter(r -> r.getPatente().equals(vehiculo.getPatente()) && calcularFechaHaceUnAnio(r.getFechaIngreso()))
-                .count();
+            if (vehiculo == null) {
+                throw new IllegalArgumentException("No se encontró el vehículo con la patente proporcionada.");
+            }
 
-        // Llamada al microservicio de Descuentos para obtener el descuento
-        DescuentoCantidadReparaciones descuento = restTemplate.getForObject(
-                "http://ms-descuentos-cantidad-reparaciones/tipoMotorCantidadReparaciones/" + vehiculo.getTipoMotor() + "/" + numeroReparaciones,
-                DescuentoCantidadReparaciones.class);
+            // Contar reparaciones en el último año
+            int numeroReparaciones = (int) reparaciones.stream()
+                    .filter(r -> r.getPatente().equals(vehiculo.getPatente()) && calcularFechaHaceUnAnio(r.getFechaIngreso()))
+                    .count();
 
-        return descuento != null ? descuento.getDescuentoPorNumeroReparaciones() : 0;
+            DescuentoCantidadReparaciones descuento = restTemplate.getForObject(
+                    "http://ms-descuentos-cantidad-reparaciones/descuentos_cantidad_reparacion/tipoMotorCantidadReparaciones/" + vehiculo.getTipoMotor() + "/" + numeroReparaciones,
+                    DescuentoCantidadReparaciones.class);
+
+            return descuento != null ? descuento.getDescuentoPorNumeroReparaciones() : 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error al calcular el descuento por cantidad de reparaciones", e);
+        }
     }
 
     public float calcularDescuentoBono(Vehiculo vehiculo) {
-        RestTemplate restTemplate = new RestTemplate();
-
-        // Llamada al microservicio de Descuentos de Bonos para obtener el bono por marca del vehículo
         DescuentoBonos bono = restTemplate.getForObject(
-                "http://ms-descuentos-bonos/marca/" + vehiculo.getMarca(),
+                "http://ms-descuentos-bonos/descuentos_bonos/marca/" + vehiculo.getMarca(),
                 DescuentoBonos.class);
 
         if (bono != null && bono.getCantidadDescuentos() > 0) {
             bono.setCantidadDescuentos(bono.getCantidadDescuentos() - 1);
-
-            // Actualizar el bono en el microservicio de Descuentos de Bonos
-            restTemplate.postForObject(
-                    "http://ms-descuentos-bonos/update",
-                    bono,
-                    DescuentoBonos.class);
-
             return bono.getMontoDescuentos();
         }
         return 0;
@@ -214,10 +221,8 @@ public class HistorialService {
 
         String tipoVehiculo = vehiculo.getTipoVehiculo();
 
-        // Llamada al microservicio de Recargos por Kilometraje para obtener el recargo
-        RestTemplate restTemplate = new RestTemplate();
         Float recargo = restTemplate.getForObject(
-                "http://ms-recargos-kilometraje/KilometrajeTipoVehiculo" + kilometraje + "/" + tipoVehiculo,
+                "http://ms-recargos-kilometraje/recargo_kilometraje/KilometrajeTipoVehiculo/" + kilometraje + "/" + tipoVehiculo,
                 Float.class);
 
         return recargo != null ? recargo : 0;
@@ -234,10 +239,8 @@ public class HistorialService {
 
         String tipoVehiculo = vehiculo.getTipoVehiculo();
 
-        // Llamada al microservicio de Recargos por Antigüedad para obtener el recargo
-        RestTemplate restTemplate = new RestTemplate();
         Float recargo = restTemplate.getForObject(
-                "http://ms-recargos-antiguedad/antiguedadTipoVehiculo/" + antiguedad + "/" + tipoVehiculo,
+                "http://ms-recargos-antiguedad/recargo_antiguedad/antiguedadTipoVehiculo/" + antiguedad + "/" + tipoVehiculo,
                 Float.class);
 
         return recargo != null ? recargo : 0;

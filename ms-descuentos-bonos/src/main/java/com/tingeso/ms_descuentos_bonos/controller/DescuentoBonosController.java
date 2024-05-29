@@ -41,10 +41,10 @@ public class DescuentoBonosController {
         return ResponseEntity.ok(descuentosBonosNuevo);
     }
 
-    @PutMapping("/")
-    public ResponseEntity<DescuentoBonosEntity> updateDescuentoBonos(@RequestBody DescuentoBonosEntity descuentosBonos){
-        DescuentoBonosEntity descuentoBonosActualizado = descuentosBonosServicio.updateDescuentoBonos(descuentosBonos);
-        return ResponseEntity.ok(descuentoBonosActualizado);
+    @PostMapping("/update")
+    public ResponseEntity<DescuentoBonosEntity> updateDescuentoBonos(@RequestBody DescuentoBonosEntity descuentoBonos) {
+        DescuentoBonosEntity updatedBono = descuentosBonosServicio.updateDescuentoBonos(descuentoBonos);
+        return ResponseEntity.ok(updatedBono);
     }
 
     @DeleteMapping("/{id}")

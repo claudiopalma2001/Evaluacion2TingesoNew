@@ -45,6 +45,7 @@ public class DescuentoBonosService {
         }
     }
 
+
     public float calcularDescuentoBono(Vehiculo vehiculo) {
         Optional<DescuentoBonosEntity> bonoExistente = descuentoBonosRepository.findByMarcaVehiculo(vehiculo.getMarca());
         if (bonoExistente.isPresent()) {
