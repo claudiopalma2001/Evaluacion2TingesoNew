@@ -40,6 +40,12 @@ public class RecargosAntiguedadController {
         return ResponseEntity.ok(recargoAntiguedad);
     }
 
+    @GetMapping("/antiguedadTipoVehiculo/{antiguedad}/{tipoVehiculo}")
+    public ResponseEntity<Float> getRecargoAntiguedadByAntiguedadYTipoVehiculo(@PathVariable int antiguedad ,@PathVariable String tipoVehiculo) {
+        Float recargoAntiguedad = recargoAntiguedadServicio.getRecargoByAntiguedadAndTipoVehiculo(antiguedad, tipoVehiculo);
+        return ResponseEntity.ok(recargoAntiguedad);
+    }
+
     @PostMapping("/")
     public ResponseEntity<RecargosAntiguedadEntity> saveRecargoAntiguedad(@RequestBody RecargosAntiguedadEntity recargoAntiguedad) {
         RecargosAntiguedadEntity recargoAntiguedadNuevo = recargoAntiguedadServicio.saveRecargoAntiguedad(recargoAntiguedad);

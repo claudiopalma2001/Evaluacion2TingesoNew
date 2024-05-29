@@ -47,7 +47,7 @@ public class RecargosAntiguedadService {
             throw new Exception(e.getMessage());
         }
     }
-    public float findRecargoByAntiguedadAndTipoVehiculo(int antiguedad, String tipoVehiculo) {
+    public float getRecargoByAntiguedadAndTipoVehiculo(int antiguedad, String tipoVehiculo) {
         return recargoAntiguedadRepositorio.findRecargoByAntiguedadAndTipoVehiculo(antiguedad, tipoVehiculo);
     }
 

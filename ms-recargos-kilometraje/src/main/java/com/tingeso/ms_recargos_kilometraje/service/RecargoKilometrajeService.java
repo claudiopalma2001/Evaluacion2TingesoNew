@@ -42,6 +42,10 @@ public class RecargoKilometrajeService {
         }
     }
 
+    public Float getRecargoPorKilometrajeYTipoVehiculo(float kilometraje, String tipoVehiculo) {
+        return recargoKilometrajeRepositorio.findRecargoByKilometrajeAndTipoVehiculo(kilometraje, tipoVehiculo);
+    }
+
     public float calcularRecargoKilometraje(Vehiculo vehiculo) {
         float kilometraje = vehiculo.getKilometraje();
         if (kilometraje < 0) {

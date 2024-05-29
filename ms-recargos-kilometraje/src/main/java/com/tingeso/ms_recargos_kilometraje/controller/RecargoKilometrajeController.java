@@ -35,6 +35,12 @@ public class RecargoKilometrajeController {
         return ResponseEntity.ok(recargosKilometraje);
     }
 
+    @GetMapping("/KilometrajeTipoVehiculo/{kilometraje}/{tipoVehiculo}")
+    public ResponseEntity<Float> getRecargoByKilometrajeYTipoVehiculo(@PathVariable float kilometraje, @PathVariable String tipoVehiculo) {
+        Float recargosKilometraje = recargoKilometrajeServicio.getRecargoPorKilometrajeYTipoVehiculo(kilometraje, tipoVehiculo);
+        return ResponseEntity.ok(recargosKilometraje);
+    }
+
     @PostMapping("/")
     public ResponseEntity<RecargoKilometrajeEntity> saveRecargoKilometraje(@RequestBody RecargoKilometrajeEntity recargoKilometraje) {
         RecargoKilometrajeEntity recargoKilometrajeNuevo = recargoKilometrajeServicio.saveRecargoKilometraje(recargoKilometraje);

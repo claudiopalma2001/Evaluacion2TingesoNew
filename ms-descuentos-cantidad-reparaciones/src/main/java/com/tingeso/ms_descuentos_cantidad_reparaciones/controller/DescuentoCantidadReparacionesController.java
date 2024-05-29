@@ -40,6 +40,12 @@ public class DescuentoCantidadReparacionesController {
         return ResponseEntity.ok(descuentosCantidadReparacion);
     }
 
+    @GetMapping("/tipoMotorCantidadReparaciones/{tipoMotor}/{cantidadReparaciones}")
+    public ResponseEntity<DescuentoCantidadReparacionesEntity> getDescuentoByTipoMotorYCantidadReparaciones(@PathVariable String tipoMotor, int cantidadReparaciones) {
+        DescuentoCantidadReparacionesEntity descuentosCantidadReparacion = descuentosCantidadReparacionServicio.obtenerDescuentoPorTipoMotorYReparaciones(tipoMotor, cantidadReparaciones);
+        return ResponseEntity.ok(descuentosCantidadReparacion);
+    }
+
     @PostMapping("/")
     public ResponseEntity<DescuentoCantidadReparacionesEntity> saveDescuentoCantidadReparacion(@RequestBody DescuentoCantidadReparacionesEntity descuentosCantidadReparacion) {
         DescuentoCantidadReparacionesEntity descuentoCantidadReparacionNuevo = descuentosCantidadReparacionServicio.saveDescuentosCantidadReparacion(descuentosCantidadReparacion);

@@ -51,6 +51,13 @@ public class HistorialController {
         return ResponseEntity.ok(historialActualizado);
     }
 
+    @PostMapping("/calcular")
+    public ResponseEntity<HistorialEntity> crearBoletaFinal(@RequestBody HistorialEntity historialReparaciones) {
+        HistorialEntity historial = historialService.calculoHistorial(historialReparaciones);
+        historial =  historialService.updateHistorialReparaciones(historial);
+        return ResponseEntity.ok(historial);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteHistorialReparacionesById(@PathVariable Long id) throws Exception {
         var isDeleted = historialService.deleteHistorialReparaciones(id);
