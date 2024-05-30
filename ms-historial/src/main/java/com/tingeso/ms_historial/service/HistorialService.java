@@ -246,8 +246,8 @@ public class HistorialService {
         return recargo != null ? recargo : 0;
     }
 
-    public HistorialEntity calculoHistorial(HistorialEntity historial){
-        String patente = historial.getPatente();
+    public HistorialEntity calculoHistorial(String patente){
+        HistorialEntity historial = historialRepository.findByPatente(patente);
         List<HistorialEntity> historiales = getHistorialReparaciones();
         List<Detalle> detalles = getAllDetallesByPatente(patente);
         Vehiculo vehiculo = getVehiculoByPatente(patente);

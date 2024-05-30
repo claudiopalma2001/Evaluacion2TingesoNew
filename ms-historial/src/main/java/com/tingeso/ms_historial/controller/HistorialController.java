@@ -107,9 +107,9 @@ public class HistorialController {
         return historialService.calcularRecargoPorAntiguedad(vehiculo);
     }
 
-    @PostMapping("/calcular")
-    public ResponseEntity<HistorialEntity> calcularHistorial(@RequestBody HistorialEntity historialReparaciones) {
-        HistorialEntity historial = historialService.calculoHistorial(historialReparaciones);
+    @PostMapping("/calcular/{patente}")
+    public ResponseEntity<HistorialEntity> calcularHistorial(@PathVariable String patente) {
+        HistorialEntity historial = historialService.calculoHistorial(patente);
         historial =  historialService.updateHistorialReparaciones(historial);
         return ResponseEntity.ok(historial);
     }

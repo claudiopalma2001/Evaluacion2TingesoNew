@@ -1,0 +1,26 @@
+pipeline{
+    agent any
+    stages{
+        stage("Build Frontend"){
+            steps{
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/claudiopalma2001/Evaluacion1Tingeso']])
+                dir("frontend"){
+                    bat "npm install"
+                    bat "npm run build"
+                }
+            }
+        }
+        stage("Build and Push Docker Image"){
+            steps{
+                dir("frontend"){
+                    script{
+                         withDockerRegistry(credentialsId: 'docker-credentials'){
+                            bat "docker build -t cpalma2001/frontend ."
+                            bat "docker push cpalma2001/frontend"
+                        }
+                    }                    
+                }
+            }
+        }
+    }
+}

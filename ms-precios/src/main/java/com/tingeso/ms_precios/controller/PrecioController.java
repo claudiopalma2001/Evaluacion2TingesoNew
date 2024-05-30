@@ -33,6 +33,11 @@ public class PrecioController {
         return ResponseEntity.ok(preciosReparaciones);
     }
 
+    @GetMapping("/idReparacionTipoMotor/{idReparacion}/{tipoMotor}")
+    public ResponseEntity<PrecioEntity> getPreciosReparacionById(@PathVariable Long idReparacion, @PathVariable String tipoMotor) {
+        PrecioEntity preciosReparacion = preciosReparacionServicio.getPrecioByIdReparacionAndTipoMotor(idReparacion, tipoMotor);
+        return ResponseEntity.ok(preciosReparacion);
+    }
 
     @PostMapping("/")
     public ResponseEntity<PrecioEntity> savePreciosReparacion(@RequestBody PrecioEntity preciosReparacion) {

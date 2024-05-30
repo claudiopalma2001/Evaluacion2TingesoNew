@@ -25,6 +25,10 @@ public class PrecioService {
         return preciosReparacionRepositorio.findByTipoDeMotor(tipoMotor);
     }
 
+    public PrecioEntity getPrecioByIdReparacionAndTipoMotor(Long idReparacion, String tipoMotor) {
+        return preciosReparacionRepositorio.findByIdReparacionAndTipoDeMotor(idReparacion, tipoMotor);
+    }
+
     public PrecioEntity savePreciosReparacion(PrecioEntity preciosReparacion) {
         return preciosReparacionRepositorio.save(preciosReparacion);
     }
