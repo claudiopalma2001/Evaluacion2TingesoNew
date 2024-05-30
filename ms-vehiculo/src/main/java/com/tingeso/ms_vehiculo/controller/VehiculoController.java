@@ -45,6 +45,13 @@ public class VehiculoController {
         return ResponseEntity.ok(vehiculos);
     }
 
+    @GetMapping("/patenteTipoMotor/{patente}")
+    public ResponseEntity<String> getTipoMotorByPatente(@PathVariable String patente) {
+        VehiculoEntity vehiculo = vehiculosServicio.getVehiculoByPatente(patente);
+        String tipoMotor = vehiculo.getTipoMotor();
+        return ResponseEntity.ok(tipoMotor);
+    }
+
     @GetMapping("/marca/{marca}")
     public ResponseEntity<List<VehiculoEntity>> getVehiculosByMarca(@PathVariable String marca) {
         List<VehiculoEntity> vehiculos = vehiculosServicio.getVehiculosByMarca(marca);

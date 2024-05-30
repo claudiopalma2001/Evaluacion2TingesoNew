@@ -34,9 +34,10 @@ public class PrecioController {
     }
 
     @GetMapping("/idReparacionTipoMotor/{idReparacion}/{tipoMotor}")
-    public ResponseEntity<PrecioEntity> getPreciosReparacionById(@PathVariable Long idReparacion, @PathVariable String tipoMotor) {
+    public ResponseEntity<Integer> getPreciosReparacionById(@PathVariable Long idReparacion, @PathVariable String tipoMotor) {
         PrecioEntity preciosReparacion = preciosReparacionServicio.getPrecioByIdReparacionAndTipoMotor(idReparacion, tipoMotor);
-        return ResponseEntity.ok(preciosReparacion);
+        Integer precio = preciosReparacion.getPrecio();
+        return ResponseEntity.ok(precio);
     }
 
     @PostMapping("/")

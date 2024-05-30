@@ -17,15 +17,9 @@ const getTipoMotor = tipoMotor => {
 }
 
 const getPrecio = (idReparacion, tipoDeMotor) => {
-    return httpClient.get(`/precios/idReparacionTipoMotor`, {
-        params: {
-            idReparacion,
-            tipoDeMotor
-        }
-    });
-}
-
-
+    return httpClient.get(`/precios/idReparacionTipoMotor/${idReparacion}/${tipoDeMotor}`);
+  };
+  
 const update = data => {
     return httpClient.put('/precios/', data);
 }

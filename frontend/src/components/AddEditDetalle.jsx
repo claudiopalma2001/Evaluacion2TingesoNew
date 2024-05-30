@@ -8,6 +8,7 @@ import MenuItem from "@mui/material/MenuItem";
 import SaveIcon from "@mui/icons-material/Save";
 import detallesService from "../services/detalles.service";
 import preciosService from "../services/precios.service";
+import vehiculosService from "../services/vehiculos.service";
 
 const AddEditDetalle = () => {
   const [patente, setPatente] = useState("");
@@ -15,54 +16,10 @@ const AddEditDetalle = () => {
   const [fechaIngreso, setFechaIngreso] = useState("");
   const [horaIngreso, setHoraIngreso] = useState("");
   const [montoReparacion, setMontoReparacion] = useState("");
-  const [errorPatente, setErrorPatente] = useState(false); // Agregado
+  const [errorPatente, setErrorPatente] = useState(false);
   const { id } = useParams();
   const [titleDetalleForm, setTitleDetalleForm] = useState("");
   const navigate = useNavigate();
-
-  const saveDetalle = (e) => {
-    e.preventDefault();
-
-    const formattedHoraIngreso = `${horaIngreso}:00`;
-
-    const detalle = {
-        patente, 
-        idReparacion,
-        fechaIngreso, 
-        horaIngreso: formattedHoraIngreso, 
-        montoReparacion,
-        id 
-    };
-    if (id) {
-      //Actualizar Datos detalle
-      detallesService
-        .update(detalle)
-        .then((response) => {
-          console.log("Detalle ha sido actualizado.", response.data);
-          navigate("/detalle/list");
-        })
-        .catch((error) => {
-          console.log(
-            "Ha ocurrido un error al intentar actualizar datos del detalle.",
-            error
-          );
-        });
-    } else {
-      //Crear nuevo detalle
-      detallesService
-        .create(detalle)
-        .then((response) => {
-          console.log("Detalle ha sido añadido.", response.data);
-          navigate("/detalle/list");
-        })
-        .catch((error) => {
-          console.log(
-            "Ha ocurrido un error al intentar crear nuevo detalle.",
-            error
-          );
-        });
-    }
-  };
 
   useEffect(() => {
     if (id) {
@@ -77,7 +34,7 @@ const AddEditDetalle = () => {
           setMontoReparacion(detalle.data.montoReparacion);
         })
         .catch((error) => {
-          console.log("Se ha producido un error.", error);
+          console.log("Se ha producido un error al obtener el detalle.", error);
         });
     } else {
       setTitleDetalleForm("Nuevo Detalle");
@@ -90,41 +47,88 @@ const AddEditDetalle = () => {
   };
 
   const handlePatenteChange = (e) => {
-    const newValue = e.target.value.toUpperCase(); 
-    if (newValue.length <= 6) { 
+    const newValue = e.target.value.toUpperCase();
+    if (newValue.length <= 6) {
       setPatente(newValue);
       setErrorPatente(!validatePatente(newValue));
     }
   };
 
   const getPrecioReparacion = (idReparacion, patente) => {
-    detallesService.getTipoMotor(patente)
+    console.log("La patente es:", patente);
+    return vehiculosService.getByTipoMotor(patente)
       .then(response => {
-        const tipoMotor = response.data.tipoMotor;
+        console.log("Respuesta de vehiculosService:", response.data);
+        const tipoMotor = response.data;
+        console.log("El tipo de motor es:", tipoMotor);
         return preciosService.getPrecio(idReparacion, tipoMotor);
       })
-      .then(response => {
-        const precio = response.data.precio;
-        setMontoReparacion(precio);
-      })
+      .then(response => response.data)
       .catch(error => {
         console.log("Error al obtener el precio de la reparación.", error);
+        alert("La patente ingresada no se encuentra registrada");
+        throw error;
       });
   };
+  
 
   const handleIdReparacionChange = (e) => {
     const newIdReparacion = e.target.value;
     setIdReparacion(newIdReparacion);
-    if (patente) {
-      getPrecioReparacion(newIdReparacion, patente);
-    }
   };
 
-  useEffect(() => {
-    if (idReparacion && patente && validatePatente(patente)) {
-      getPrecioReparacion(idReparacion, patente);
+  const saveDetalle = (e) => {
+    e.preventDefault();
+
+    const formattedHoraIngreso = `${horaIngreso}:00`;
+
+    const detalle = {
+      patente,
+      idReparacion,
+      fechaIngreso,
+      horaIngreso: formattedHoraIngreso,
+      montoReparacion: 0, // Inicialmente poner montoReparacion en 0
+    };
+
+    if (id) {
+      // Actualizar datos del detalle
+      detallesService
+        .update({ ...detalle, id })
+        .then((response) => {
+          console.log("Detalle ha sido actualizado.", response.data);
+          navigate("/detalle/list");
+        })
+        .catch((error) => {
+          console.log("Ha ocurrido un error al intentar actualizar datos del detalle.", error);
+        });
+    } else {
+      // Crear nuevo detalle
+      detallesService
+        .create(detalle)
+        .then((response) => {
+          const createdDetalle = response.data;
+          console.log("Detalle ha sido añadido.", createdDetalle);
+
+          // Obtener el precio de la reparación y actualizar el detalle
+          return getPrecioReparacion(idReparacion, patente)
+            .then(precio => {
+              console.log("Precio de reparación obtenido:", precio);
+              const updatedDetalle = {
+                ...createdDetalle,
+                montoReparacion: precio
+              };
+              return detallesService.update(updatedDetalle);
+            })
+            .then(() => {
+              console.log("Monto de reparación actualizado.");
+              navigate("/detalle/list");
+            });
+        })
+        .catch((error) => {
+          console.log("Ha ocurrido un error al intentar crear nuevo detalle.", error);
+        });
     }
-  }, [idReparacion, patente]);
+  };
 
   return (
     <Box
@@ -133,6 +137,7 @@ const AddEditDetalle = () => {
       alignItems="center"
       justifyContent="center"
       component="form"
+      onSubmit={saveDetalle}
     >
       <h3> {titleDetalleForm} </h3>
       <hr />
@@ -143,9 +148,9 @@ const AddEditDetalle = () => {
           value={patente}
           variant="standard"
           onChange={handlePatenteChange}
-          error={errorPatente} 
-          helperText={errorPatente ? "Formato de patente inválido" : "Ej. ABCD12"} 
-          inputProps={{ maxLength: 6 }} 
+          error={errorPatente}
+          helperText={errorPatente ? "Formato de patente inválido" : "Ej. ABCD12"}
+          inputProps={{ maxLength: 6 }}
         />
       </FormControl>
 
@@ -197,11 +202,13 @@ const AddEditDetalle = () => {
       <FormControl fullWidth>
         <TextField
           id="montoReparacion"
-          label="Monto de la reparación"
+          label="Monto Reparación"
           type="number"
           value={montoReparacion}
           variant="standard"
-          onChange={(e) => setMontoReparacion(e.target.value)}
+          InputProps={{
+            readOnly: true,
+          }}
         />
       </FormControl>
 
@@ -210,7 +217,7 @@ const AddEditDetalle = () => {
         <Button
           variant="contained"
           color="info"
-          onClick={(e) => saveDetalle(e)}
+          type="submit"
           style={{ marginLeft: "0.5rem" }}
           startIcon={<SaveIcon />}
         >

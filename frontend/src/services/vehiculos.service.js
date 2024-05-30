@@ -20,6 +20,10 @@ const getTipoMotor = tipoMotor => {
     return httpClient.get(`/vehiculos/tipoMotor/${tipoMotor}`);
 }
 
+const getByTipoMotor = patenteMotor => {
+    return httpClient.get(`/vehiculos/patenteTipoMotor/${patenteMotor}`);
+}
+
 const getTipoVehiculo = tipoVehiculo => {
     return httpClient.get(`/vehiculos/tipoVehiculo/${tipoVehiculo}`);
 }
@@ -35,4 +39,4 @@ const update = data => {
 const remove = id => {
     return httpClient.delete(`/vehiculos/${id}`);
 }
-export default { getAll, create, get, getPatente, getTipoMotor, getTipoVehiculo, getMarca, update, remove };
+export default { getAll, create, get, getPatente, getByTipoMotor, getTipoMotor, getTipoVehiculo, getMarca, update, remove };
