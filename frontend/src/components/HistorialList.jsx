@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import historialesService from "../services/historiales.service";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
@@ -12,10 +12,11 @@ import Button from "@mui/material/Button";
 import CarRepairIcon from "@mui/icons-material/CarRepair";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import CalculateIcon from "@mui/icons-material/Calculate";
+import InfoIcon from "@mui/icons-material/Info";  // Import the icon for "Ver detalle"
 
 const HistorialList = () => {
   const [historiales, setHistoriales] = useState([]);
-
   const navigate = useNavigate();
 
   const init = () => {
@@ -61,6 +62,28 @@ const HistorialList = () => {
   const handleEdit = (id) => {
     console.log("Mostrando id", id);
     navigate(`/historial/edit/${id}`);
+  };
+
+  const handleCalculate = async (patente) => {
+    try {
+      const response = await historialesService.calculate(patente);
+      console.log("Datos calculados", response.data);
+      init();
+    } catch (error) {
+      console.log("Error al calcular los datos", error);
+    }
+  };
+
+  const handleViewDetails = (patente) => {
+    navigate(`/historial/detalles/patente/${patente}`);
+  };
+
+  const handleViewDescuentos = (patente) => {
+    navigate(`/historial/descuentos/${patente}`); 
+  };
+
+  const handleViewRecargos = (patente) => {
+    navigate(`/historial/recargos/${patente}`); 
   };
 
   return (
@@ -118,6 +141,9 @@ const HistorialList = () => {
             <TableCell align="left" sx={{ fontWeight: "bold" }}>
               Hora Recogida
             </TableCell>
+            <TableCell align="center" sx={{ fontWeight: "bold" }}>
+              Acciones
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -138,7 +164,7 @@ const HistorialList = () => {
               <TableCell align="right">{historial.horaSalida}</TableCell>
               <TableCell align="right">{historial.fechaRecogida}</TableCell>
               <TableCell align="right">{historial.horaRecogida}</TableCell>
-              <TableCell>
+              <TableCell align="center">
                 <Button
                   variant="contained"
                   color="info"
@@ -149,7 +175,6 @@ const HistorialList = () => {
                 >
                   Editar
                 </Button>
-
                 <Button
                   variant="contained"
                   color="error"
@@ -159,6 +184,46 @@ const HistorialList = () => {
                   startIcon={<DeleteIcon />}
                 >
                   Eliminar
+                </Button>
+                {historial.montoTotalReparaciones === 0 && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    onClick={() => handleCalculate(historial.patente)}
+                    style={{ marginLeft: "0.5rem" }}
+                    startIcon={<CalculateIcon />}
+                  >
+                    Calcular
+                  </Button>
+                )}
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  size="small"
+                  onClick={() => handleViewDetails(historial.patente)}
+                  style={{ marginLeft: "0.5rem" }}
+                  startIcon={<InfoIcon />}
+                >
+                  Ver detalle
+                </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  onClick={() => handleViewDescuentos(historial.patente)}
+                  style={{ marginLeft: "0.5rem" }}
+                >
+                  Ver cálculo descuentos
+                </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  onClick={() => handleViewRecargos(historial.patente)}
+                  style={{ marginLeft: "0.5rem" }}
+                >
+                  Ver cálculo recargos
                 </Button>
               </TableCell>
             </TableRow>

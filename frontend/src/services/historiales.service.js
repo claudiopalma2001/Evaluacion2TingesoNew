@@ -44,4 +44,32 @@ const calculate = patente =>{
     return httpClient.post(`/historial/calcular/${patente}`)
 }
 
-export default { getAll, create, get, getIdReparacion, getPatente, getPatentes, getDetalles, getDetallesVehiculo, update, remove, calculate };
+const descuentoDiaAtencion = patente =>{
+    return httpClient.get(`/historial/calcular-descuento-dia-atencion/${patente}`)
+}
+
+const descuentoCantidadReparacion = patente =>{
+    return httpClient.get(`/historial/calcular-descuento-cantidad-reparacion/${patente}`)
+}
+
+const descuentoBono = patente =>{
+    return httpClient.get(`/historial/calcular-descuento-bono/${patente}`)
+}
+
+const recargoRetraso = patente =>{
+    return httpClient.get(`/historial/calcular-recargo-retraso/${patente}`)
+}
+
+const recargoAntiguedad = patente =>{
+    return httpClient.get(`/historial/calcular-recargo-antiguedad/${patente}`)
+}
+
+const recargoKilometraje = patente =>{
+    return httpClient.get(`/historial/calcular-recargo-kilometraje/${patente}`)
+}
+
+
+
+export default { getAll, create, get, getIdReparacion, getPatente, getPatentes, getDetalles, getDetallesVehiculo, update, remove, calculate,
+    descuentoBono, descuentoCantidadReparacion, descuentoDiaAtencion, recargoAntiguedad, recargoKilometraje, recargoRetraso
+ };

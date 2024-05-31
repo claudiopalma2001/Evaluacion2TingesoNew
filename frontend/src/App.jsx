@@ -10,6 +10,9 @@ import AddEditHistorial from './components/AddEditHistorial';
 import PrecioList from './components/PrecioList';
 import DetalleList from './components/DetalleList';
 import AddEditDetalle from './components/AddEditDetalle';
+import DetallesVehiculo from './components/DetalleVehiculo';
+import DescuentosHistorial from './components/DescuentosHistorial';
+import RecargosHistorial from './components/RecargosHistorial';
 
 function App() {
   return (
@@ -24,6 +27,9 @@ function App() {
             <Route path="/historial/list" element={<HistorialList/>} />
             <Route path="/historial/add" element={<AddEditHistorial/>} />
             <Route path="/historial/edit/:id" element={<AddEditHistorial/>} />
+            <Route path="/historial/detalles/patente/:patente" element={<DetallesVehiculo />} />
+            <Route path="/historial/descuentos/:patente" element={<DescuentosHistorial />} />
+            <Route path="/historial/recargos/:patente" element={<RecargosHistorial />} />
             <Route path="/detalle/list" element={<DetalleList/>} />
             <Route path="/detalle/add" element={<AddEditDetalle/>} />
             <Route path="/detalle/edit/:id" element={<AddEditDetalle/>} />

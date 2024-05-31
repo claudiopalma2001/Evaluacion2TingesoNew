@@ -10,7 +10,6 @@ import com.tingeso.ms_historial.model.Detalle;
 import com.tingeso.ms_historial.model.Vehiculo;
 import com.tingeso.ms_historial.repository.HistorialRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -249,7 +248,8 @@ public class HistorialService {
     public HistorialEntity calculoHistorial(String patente){
         HistorialEntity historial = historialRepository.findByPatente(patente);
         List<HistorialEntity> historiales = getHistorialReparaciones();
-        List<Detalle> detalles = getAllDetallesByPatente(patente);
+        List<LinkedHashMap> response = restTemplate.getForObject("http://ms-detalle/detalles/patentes/" + patente, List.class);
+        List<Detalle> detalles = objectMapper.convertValue(response, new TypeReference<List<Detalle>>() {});
         Vehiculo vehiculo = getVehiculoByPatente(patente);
 
         if (vehiculo == null) {
