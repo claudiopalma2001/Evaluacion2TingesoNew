@@ -12,6 +12,7 @@ import jakarta.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class VehiculoEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
