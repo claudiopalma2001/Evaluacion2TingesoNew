@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-detalle-deployment
+  labels:
+    app: ms-detalle-deployment
+spec:
+  selector:
+    matchLabels:
+      app: ms-detalle-deployment
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ms-detalle-deployment
+    spec:
+      containers:
+        - name: ms-detalle
+          image: cpalma2001/ms-detalle
+          ports:
+            - containerPort: 8083
+          env:
+            - name: SERVER_PORT
+              value: "0"
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config-map
+                  key: DB_HOST_DETALLES
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config-map
+                  key: DB_PORT_DETALLES
+            - name: DB_DBNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config-map
+                  key: DB_DBNAME_DETALLES
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: DB_USER_DETALLES
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: DB_PASSWORD_DETALLES

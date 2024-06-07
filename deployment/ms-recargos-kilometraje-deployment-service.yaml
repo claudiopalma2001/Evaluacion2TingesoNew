@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-recargos-kilometraje-deployment
+  labels:
+    app: ms-recargos-kilometraje-deployment
+spec:
+  selector:
+    matchLabels:
+      app: ms-recargos-kilometraje-deployment
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ms-recargos-kilometraje-deployment
+    spec:
+      containers:
+        - name: ms-recargos-kilometraje
+          image: cpalma2001/ms-recargos-kilometraje
+          ports:
+            - containerPort: 8088
+          env:
+            - name: SERVER_PORT
+              value: "0"
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config-map
+                  key: DB_HOST_RECARGOSKILOMETRAJE
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config-map
+                  key: DB_PORT_RECARGOSKILOMETRAJE
+            - name: DB_DBNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config-map
+                  key: DB_DBNAME_RECARGOSKILOMETRAJE
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: DB_USER_RECARGOSKILOMETRAJE
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: DB_PASSWORD_RECARGOSKILOMETRAJE
