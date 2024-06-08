@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: ms-vehiculo
-          image: cpalma2001/ms-vehiculos
+          image: cpalma2001/ms-vehiculo
           ports:
             - containerPort: 8082
           env:
