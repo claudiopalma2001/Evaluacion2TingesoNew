@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: descuentosBonos-db-pv
+  name: recargos-antiguedad-db-pv
   labels:
     type: local
 spec:
@@ -11,12 +11,12 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/data/descuentosBonos-db-data"
+    path: "/data/recargos-antiguedad-db-data"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: descuentosBonos-db-pvc
+  name: recargos-antiguedad-db-pvc
   labels:
     app: postgres
     tier: database
@@ -31,24 +31,24 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: descuentosBonos-db-deployment
+  name: recargos-antiguedad-db-deployment
   labels:
-    app: descuentosBonos-db-deployment
+    app: recargos-antiguedad-db-deployment
     tier: database
 spec:
   selector:
     matchLabels:
-      app: descuentosBonos-db-deployment
+      app: recargos-antiguedad-db-deployment
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: descuentosBonos-db-deployment
+        app: recargos-antiguedad-db-deployment
         tier: database
     spec:
       containers:
-        - name: descuentosBonos-db
+        - name: recargos-antiguedad-db
           image: postgres
           imagePullPolicy: "IfNotPresent"
           ports:
@@ -58,33 +58,33 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: postgres-credentials
-                  key: DB_USER_DESCUENTOSBONOS
+                  key: DB_USER_RECARGOSANTIGUEDAD
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: postgres-credentials
-                  key: DB_PASSWORD_DESCUENTOSBONOS
+                  key: DB_PASSWORD_RECARGOSANTIGUEDAD
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
-              name: descuentosBonos-db-data
+              name: recargos-antiguedad-db-data
       volumes:
-        - name: descuentosBonos-db-data
+        - name: recargos-antiguedad-db-data
           persistentVolumeClaim:
-            claimName: descuentosBonos-db-pvc
+            claimName: recargos-antiguedad-db-pvc
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: descuentosBonos-db-service
+  name: recargos-antiguedad-db-service
   labels:
-    app: descuentosBonos-db-service
+    app: recargos-antiguedad-db-service
     tier: database
 spec:
   ports:
-    - port: 5432
+    - port: 5437
       targetPort: 5432
       protocol: TCP
   selector:
-    app: descuentosBonos-db-deployment
+    app: recargos-antiguedad-db-deployment
     tier: database
   type: LoadBalancer

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: recargosKilometraje-db-pv
+  name: descuentos-bonos-db-pv
   labels:
     type: local
 spec:
@@ -11,12 +11,12 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/data/recargosKilometraje-db-data"
+    path: "/data/descuentos-bonos-db-data"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: recargosKilometraje-db-pvc
+  name: descuentos-bonos-db-pvc
   labels:
     app: postgres
     tier: database
@@ -31,24 +31,24 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: recargosKilometraje-db-deployment
+  name: descuentos-bonos-db-deployment
   labels:
-    app: recargosKilometraje-db-deployment
+    app: descuentos-bonos-db-deployment
     tier: database
 spec:
   selector:
     matchLabels:
-      app: recargosKilometraje-db-deployment
+      app: descuentos-bonos-db-deployment
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: recargosKilometraje-db-deployment
+        app: descuentos-bonos-db-deployment
         tier: database
     spec:
       containers:
-        - name: recargosKilometraje-db
+        - name: descuentos-bonos-db
           image: postgres
           imagePullPolicy: "IfNotPresent"
           ports:
@@ -58,33 +58,33 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: postgres-credentials
-                  key: DB_USER_RECARGOSKILOMETRAJE
+                  key: DB_USER_DESCUENTOSBONOS
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: postgres-credentials
-                  key: DB_PASSWORD_RECARGOSKILOMETRAJE
+                  key: DB_PASSWORD_DESCUENTOSBONOS
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
-              name: recargosKilometraje-db-data
+              name: descuentos-bonos-db-data
       volumes:
-        - name: recargosKilometraje-db-data
+        - name: descuentos-bonos-db-data
           persistentVolumeClaim:
-            claimName: recargosKilometraje-db-pvc
+            claimName: descuentos-bonos-db-pvc
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: recargosKilometraje-db-service
+  name: descuentos-bonos-db-service
   labels:
-    app: recargosKilometraje-db-service
+    app: descuentos-bonos-db-service
     tier: database
 spec:
   ports:
-    - port: 5438
+    - port: 5432
       targetPort: 5432
       protocol: TCP
   selector:
-    app: recargosKilometraje-db-deployment
+    app: descuentos-bonos-db-deployment
     tier: database
   type: LoadBalancer

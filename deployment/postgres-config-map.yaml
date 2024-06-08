@@ -5,28 +5,28 @@ metadata:
   labels:
     app: postgres-config-map
 data:
-  DB_HOST_DESCUENTOSBONOS: descuentosBonos-db-service
+  DB_HOST_DESCUENTOSBONOS: descuentos-bonos-db-service
   DB_PORT_DESCUENTOSBONOS: "5432"
-  DB_DBNAME_DESCUENTOSBONOS: descuentosBonos-db
-  DB_HOST_DESCUENTOSCANTIDADREPARACION: descuentosCantidadReparacion-db-service
+  DB_DBNAME_DESCUENTOSBONOS: descuentosbonos
+  DB_HOST_DESCUENTOSCANTIDADREPARACION: descuentos-cantidad-reparacion-db-service
   DB_PORT_DESCUENTOSCANTIDADREPARACION: "5433"
-  DB_DBNAME_DESCUENTOSCANTIDADREPARACION: descuentosCantidadReparacion-db
+  DB_DBNAME_DESCUENTOSCANTIDADREPARACION: descuentoscantidadreparacion
   DB_HOST_DETALLES: detalles-db-service
   DB_PORT_DETALLES: "5434"
-  DB_DBNAME_DETALLES: detalles-db
+  DB_DBNAME_DETALLES: detalles
   DB_HOST_HISTORIAL: historial-db-service
   DB_PORT_HISTORIAL: "5435"
-  DB_DBNAME_HISTORIAL: historial-db
+  DB_DBNAME_HISTORIAL: historial
   DB_HOST_PRECIOS: precios-db-service
   DB_PORT_PRECIOS: "5436"
-  DB_DBNAME_PRECIOS: precios-db
-  DB_HOST_RECARGOSANTIGUEDAD: recargosAntiguedad-db-service
+  DB_DBNAME_PRECIOS: precios
+  DB_HOST_RECARGOSANTIGUEDAD: recargos-antiguedad-db-service
   DB_PORT_RECARGOSANTIGUEDAD: "5437"
-  DB_DBNAME_RECARGOSANTIGUEDAD: recargosAntiguedad-db
-  DB_HOST_RECARGOSKILOMETRAJE: recargosKilometraje-db-service
+  DB_DBNAME_RECARGOSANTIGUEDAD: recargosantiguedad
+  DB_HOST_RECARGOSKILOMETRAJE: recargos-kilometraje-db-service
   DB_PORT_RECARGOSKILOMETRAJE: "5438"
-  DB_DBNAME_RECARGOSKILOMETRAJE: recargosKilometraje-db
+  DB_DBNAME_RECARGOSKILOMETRAJE: recargoskilometraje
   DB_HOST_VEHICULOS: vehiculos-db-service
   DB_PORT_VEHICULOS: "5439"
-  DB_DBNAME_VEHICULOS: vehiculos-db
+  DB_DBNAME_VEHICULOS: vehiculos
 

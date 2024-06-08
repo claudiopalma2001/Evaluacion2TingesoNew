@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: descuentosCantidadReparacion-db-pv
+  name: recargos-kilometraje-db-pv
   labels:
     type: local
 spec:
@@ -11,12 +11,12 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/data/descuentosCantidadReparacion-db-data"
+    path: "/data/recargos-kilometraje-db-data"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: descuentosCantidadReparacion-db-pvc
+  name: recargos-kilometraje-db-pvc
   labels:
     app: postgres
     tier: database
@@ -31,24 +31,24 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: descuentosCantidadReparacion-db-deployment
+  name: recargos-kilometraje-db-deployment
   labels:
-    app: descuentosCantidadReparacion-db-deployment
+    app: recargos-kilometraje-db-deployment
     tier: database
 spec:
   selector:
     matchLabels:
-      app: descuentosCantidadReparacion-db-deployment
+      app: recargos-kilometraje-db-deployment
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: descuentosCantidadReparacion-db-deployment
+        app: recargos-kilometraje-db-deployment
         tier: database
     spec:
       containers:
-        - name: descuentosCantidadReparacion-db
+        - name: recargos-kilometraje-db
           image: postgres
           imagePullPolicy: "IfNotPresent"
           ports:
@@ -58,33 +58,33 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: postgres-credentials
-                  key: DB_USER_DESCUENTOSCANTIDADREPARACION
+                  key: DB_USER_RECARGOSKILOMETRAJE
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: postgres-credentials
-                  key: DB_PASSWORD_DESCUENTOSCANTIDADREPARACION
+                  key: DB_PASSWORD_RECARGOSKILOMETRAJE
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
-              name: descuentosCantidadReparacion-db-data
+              name: recargos-kilometraje-db-data
       volumes:
-        - name: descuentosCantidadReparacion-db-data
+        - name: recargos-kilometraje-db-data
           persistentVolumeClaim:
-            claimName: descuentosCantidadReparacion-db-pvc
+            claimName: recargos-kilometraje-db-pvc
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: descuentosCantidadReparacion-db-service
+  name: recargos-kilometraje-db-service
   labels:
-    app: descuentosCantidadReparacion-db-service
+    app: recargos-kilometraje-db-service
     tier: database
 spec:
   ports:
-    - port: 5433
+    - port: 5438
       targetPort: 5432
       protocol: TCP
   selector:
-    app: descuentosCantidadReparacion-db-deployment
+    app: recargos-kilometraje-db-deployment
     tier: database
   type: LoadBalancer

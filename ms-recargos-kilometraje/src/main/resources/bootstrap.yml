@@ -7,10 +7,10 @@ spring:
   cloud:
     config:
       enabled: true
-      uri: http://localhost:8081
+      uri: http://config-server-service:8081
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/recargosKilometraje
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_DBNAME}
     username: postgres
     password: password
   jpa:

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: recargosAntiguedad-db-pv
+  name: descuentos-cantidad-reparacion-db-pv
   labels:
     type: local
 spec:
@@ -11,12 +11,12 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/data/recargosAntiguedad-db-data"
+    path: "/data/descuentos-cantidad-reparacion-db-data"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: recargosAntiguedad-db-pvc
+  name: descuentos-cantidad-reparacion-db-pvc
   labels:
     app: postgres
     tier: database
@@ -31,24 +31,24 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: recargosAntiguedad-db-deployment
+  name: descuentos-cantidad-reparacion-db-deployment
   labels:
-    app: recargosAntiguedad-db-deployment
+    app: descuentos-cantidad-reparacion-db-deployment
     tier: database
 spec:
   selector:
     matchLabels:
-      app: recargosAntiguedad-db-deployment
+      app: descuentos-cantidad-reparacion-db-deployment
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: recargosAntiguedad-db-deployment
+        app: descuentos-cantidad-reparacion-db-deployment
         tier: database
     spec:
       containers:
-        - name: recargosAntiguedad-db
+        - name: descuentos-cantidad-reparacion-db
           image: postgres
           imagePullPolicy: "IfNotPresent"
           ports:
@@ -58,33 +58,33 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: postgres-credentials
-                  key: DB_USER_RECARGOSANTIGUEDAD
+                  key: DB_USER_DESCUENTOSCANTIDADREPARACION
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: postgres-credentials
-                  key: DB_PASSWORD_RECARGOSANTIGUEDAD
+                  key: DB_PASSWORD_DESCUENTOSCANTIDADREPARACION
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
-              name: recargosAntiguedad-db-data
+              name: descuentos-cantidad-reparacion-db-data
       volumes:
-        - name: recargosAntiguedad-db-data
+        - name: descuentos-cantidad-reparacion-db-data
           persistentVolumeClaim:
-            claimName: recargosAntiguedad-db-pvc
+            claimName: descuentos-cantidad-reparacion-db-pvc
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: recargosAntiguedad-db-service
+  name: descuentos-cantidad-reparacion-db-service
   labels:
-    app: recargosAntiguedad-db-service
+    app: descuentos-cantidad-reparacion-db-service
     tier: database
 spec:
   ports:
-    - port: 5437
+    - port: 5433
       targetPort: 5432
       protocol: TCP
   selector:
-    app: recargosAntiguedad-db-deployment
+    app: descuentos-cantidad-reparacion-db-deployment
     tier: database
   type: LoadBalancer
